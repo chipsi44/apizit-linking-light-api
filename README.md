@@ -1,2 +1,49 @@
-# apizit-linking-light-api
-Light standalone APIZIT Linking reference API
+# APIZIT Linking Light API
+
+A minimal declarative API for repeatable APIZIT scan, build, launch, and timeout
+tests. Ordinary Python functions stay independent from the HTTP runtime.
+
+## Routes
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Immediate health response |
+| `GET` | `/info` | Framework and profile metadata |
+| `POST` | `/echo` | JSON request and response |
+| `GET` | `/items/{item_id}?include_details=true` | Path and query parameters |
+| `GET` | `/slow` | Intentional 80-second response |
+
+`/slow` is a timeout probe. Never configure it as a health check.
+
+## Run locally
+
+Python 3.12 is required. The preview dependency is intentionally development-only:
+APIZIT supplies its approved Linking runtime during a managed launch.
+
+```bash
+python -m venv .venv
+# Linux/macOS: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements-dev.txt
+apizit-linking validate .
+apizit-linking preview . --port 8000
+```
+
+The API is available at `http://127.0.0.1:8000`.
+
+```bash
+curl http://127.0.0.1:8000/health
+curl "http://127.0.0.1:8000/items/7?include_details=true"
+curl -X POST http://127.0.0.1:8000/echo -H "Content-Type: application/json" -d '{"message":"hello","count":2}'
+```
+
+## Verify
+
+```bash
+apizit-linking validate .
+ruff check .
+ruff format --check .
+pytest -q
+```
+
+This is a controlled beta reference project, not a production application.
