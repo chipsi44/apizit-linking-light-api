@@ -1,0 +1,44 @@
+version: 1
+
+runtime:
+  language: python
+  version: "3.12"
+
+routes:
+  - path: /health
+    method: GET
+    function: service:health
+
+  - path: /info
+    method: GET
+    function: service:info
+
+  - path: /echo
+    method: POST
+    function: service:echo
+    parameters:
+      message:
+        source:
+          location: body
+          name: message
+      count:
+        source:
+          location: body
+          name: count
+
+  - path: /items/{item_id}
+    method: GET
+    function: service:item
+    parameters:
+      item_id:
+        source:
+          location: path
+          name: item_id
+      include_details:
+        source:
+          location: query
+          name: include_details
+
+  - path: /slow
+    method: GET
+    function: service:slow
